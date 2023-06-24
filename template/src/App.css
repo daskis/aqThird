@@ -1,0 +1,70 @@
+.disabled {
+  display: none;
+}
+.enabled {
+  display: block;
+}
+.expanded-select  {
+  width: 70%;
+}
+.App {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+.AppHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  height: 50px;
+  padding: 10px 20px;
+}
+.AppSidebar {
+  display: block;
+  width: 20vw;
+}
+.AppContent {
+  flex-grow: 1;
+}
+.AppFooter {
+  display: flex;
+  height: 50px;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eee;
+}
+.AppContentWrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.AppContentWrapperWithoutAuth {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  align-items: center;
+}
+
+.infosMenuWrapper {
+  position: relative;
+}
+.infosMenu {
+  padding: 30px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 200px;
+  background: #fff;
+}
+
+
+.form {
+  margin: 0 auto;
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
