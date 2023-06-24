@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons';
-import {Button, Input, Pagination, Select, Space, Table} from 'antd';
+import {Button, ConfigProvider, Input, Pagination, Select, Space, Table} from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 
@@ -283,10 +283,19 @@ const TableComponent = () => {
             ),
         },
         {
-            title: 'Action',
+            title: 'Действие',
             key: 'action',
             render: (text, record) => (
-                <Button onClick={() => handleButtonClick(record.key)}>Show Key</Button>
+                <ConfigProvider
+                    theme={{
+                        token: {
+                            colorPrimary: "#00b96b"
+                        }
+                    }}
+                >
+                    <Button type="primary" onClick={() => handleButtonClick(record.key)}>Отправить задачу</Button>
+
+                </ConfigProvider>
             ),
         },
     ];

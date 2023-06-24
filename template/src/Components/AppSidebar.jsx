@@ -36,8 +36,8 @@ const AppSidebar = () => {
                                 icon: <AppstoreAddOutlined/>
                             },
                             {
-                                label: "Исполнители",
-                                key: "/executors",
+                                label: "Информация о анализах",
+                                key: "/analyzes",
                                 icon: <AppstoreAddOutlined/>
                             },
                             {
