@@ -1,6 +1,7 @@
 .disabled {
   display: none;
 }
+
 .enabled {
   display: block;
 }
@@ -27,7 +28,7 @@
   height: 100%;
 }
 .AppContent {
-  flex-grow: 1;
+  flex: 1;
 }
 .AppFooter {
   display: flex;
@@ -39,7 +40,6 @@
 .AppContentWrapper {
   flex-grow: 1;
   display: flex;
-  justify-content: stretch;
   align-items: stretch;
 }
 .AppContentWrapperWithoutAuth {
@@ -61,8 +61,16 @@
   width: 200px;
   background: #fff;
 }
-
-
+.infosMenu > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.closeIcon {
+  margin-left: auto;
+  cursor: pointer;
+}
 .form {
   margin: 0 auto;
   gap: 20px;

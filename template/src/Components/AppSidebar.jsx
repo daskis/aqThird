@@ -45,6 +45,11 @@ const AppSidebar = () => {
                                 key: "/employees",
                                 icon: <AppstoreAddOutlined/>
                             },
+                            {
+                                label: "Ожидаемые изменения",
+                                key: "/changes",
+                                icon: <AppstoreAddOutlined/>
+                            },
                         ]}>
 
                     </Menu>
@@ -68,6 +73,11 @@ const AppSidebar = () => {
                             {
                                 label: "Информация о анализах",
                                 key: "/analyzes",
+                                icon: <AppstoreAddOutlined/>
+                            },
+                            {
+                                label: "Создать новый анализ",
+                                key: "/new",
                                 icon: <AppstoreAddOutlined/>
                             },
 

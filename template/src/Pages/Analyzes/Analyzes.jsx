@@ -1,5 +1,8 @@
-import {Space, Table} from 'antd';
+import {Calendar, DatePicker, Space, Table} from 'antd';
 import {Typography} from "antd";
+import moment from 'moment';
+import {useState} from "react";
+
 const {Text, Title} = Typography
 const data = [
     {
@@ -26,7 +29,6 @@ const data = [
         tasteProfile: 'Сладкий',
         colorProfile: 'Красный',
         grapeVariety: 'Мерло',
-        origin: 'Франция',
     },
     {
         key: '2',
@@ -84,7 +86,6 @@ const data = [
 
 
 const columnsChemical = [
-    { title: 'Дата', dataIndex: 'date', key: 'date' },
     { title: 'Уровень кислотности', dataIndex: 'acidity', key: 'acidity' },
     { title: 'Уровень pH', dataIndex: 'pH', key: 'pH' },
     { title: 'Содержание сахара', dataIndex: 'sugarContent', key: 'sugarContent' },
@@ -93,7 +94,6 @@ const columnsChemical = [
 ];
 
 const columnsPhysical = [
-    { title: 'Дата', dataIndex: 'date', key: 'date' },
     { title: 'Вес кисти винограда', dataIndex: 'grapeWeight', key: 'grapeWeight' },
     { title: 'Размер ягоды', dataIndex: 'berrySize', key: 'berrySize' },
     { title: 'Цвет ягоды', dataIndex: 'berryColor', key: 'berryColor' },
@@ -101,14 +101,18 @@ const columnsPhysical = [
 ];
 
 const columnsMicrobiological = [
-    { title: 'Дата', dataIndex: 'date', key: 'date' },
     { title: 'Содержание дрожжей', dataIndex: 'yeastContent', key: 'yeastContent' },
     { title: 'Содержание бактерий', dataIndex: 'bacteriaContent', key: 'bacteriaContent' },
 ];
 
+const rest = [
+    { title: 'Профиль аромата', dataIndex: 'aromaProfile', key: 'aromaProfile' },
+    { title: 'Профиль вкуса', dataIndex: 'tasteProfile', key: 'tasteProfile' },
+    { title: 'Сорт винограда', dataIndex: 'grapeVariety', key: 'grapeVariety' },
+]
+
 const chemicalTableData = data.map(item => ({
     key: item.key,
-    date: item.date,
     acidity: item.chemicalAnalysis.acidity || '',
     pH: item.chemicalAnalysis.pH || '',
     sugarContent: item.chemicalAnalysis.sugarContent || '',
@@ -118,7 +122,6 @@ const chemicalTableData = data.map(item => ({
 
 const physicalTableData = data.map(item => ({
     key: item.key,
-    date: item.date,
     grapeWeight: item.physicalAnalysis.grapeWeight || '',
     berrySize: item.physicalAnalysis.berrySize || '',
     berryColor: item.physicalAnalysis.berryColor || '',
@@ -127,35 +130,84 @@ const physicalTableData = data.map(item => ({
 
 const microbiologicalTableData = data.map(item => ({
     key: item.key,
-    date: item.date,
     yeastContent: item.microbiologicalAnalysis.yeastContent || '',
     bacteriaContent: item.microbiologicalAnalysis.bacteriaContent || '',
 }));
 
+const restTableData = data.map(item => ({
+    key: item.key,
+    aromaProfile: item.aromaProfile || "",
+    tasteProfile: item.tasteProfile || "",
+    grapeVariety: item.grapeVariety || "",
+}))
+
 const Analyzes = () => {
-    const styles = {
-        display: "flex",
+    const [selectedDate, setSelectedDate] = useState(null);
+
+    const handleClick = (date, dateString) => {
+        const formattedDate = moment(date).format('YYYY-MM-DD');
+        console.log(formattedDate);
+    };
+
+    const gridContainerStyles = {
+        display: 'grid',
+        gridTemplateColumns: "1fr, 1fr",
         padding: 20,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 20
-    }
+        gridGap: '32px',
+        gridTemplateAreas: "" +
+            "time ." +
+            "analyzes analyzes" +
+            "analyzes analyzes"
+    };
+
     return (
-        <Space style={styles}>
+        <Space size={32} style={gridContainerStyles}>
+            <DatePicker
+                style={{ width: 200, gridArea: "time" }}
+                placeholder={"Выберите дату анализа"}
+                onChange={handleClick}
+            />
+            <div style={{gridArea: "analyzes"}}>
+                <Title level={4}>Основные данные</Title>
+                <Table
+                    dataSource={restTableData}
+                    columns={rest}
+                    pagination={false}
+                    scroll={{ x: "max-content" }}
+                />
+            </div>
+            <div style={{gridArea: "analyzes"}}>
+                <Title level={4}>Физический анализ</Title>
+                <Table
+                    dataSource={physicalTableData}
+                    columns={columnsPhysical}
+                    pagination={false}
+                    scroll={{ x: "max-content" }}
+                />
+            </div>
             <div>
                 <Title level={4}>Химический анализ</Title>
-                <Table dataSource={chemicalTableData} columns={columnsChemical} pagination={false} />
+                <Table
+                    dataSource={chemicalTableData}
+                    columns={columnsChemical}
+                    pagination={false}
+                    scroll={{ x: "max-content" }}
+                />
             </div>
 
-            <div>
-                <Title level={4}>Физический анализ</Title>
-                <Table dataSource={physicalTableData} columns={columnsPhysical} pagination={false} />
-            </div>
 
-            <div>
+
+            <div style={{gridArea: "analyzes"}}>
                 <Title level={4}>Микробиологический анализ</Title>
-                <Table dataSource={microbiologicalTableData} columns={columnsMicrobiological} pagination={false} />
+                <Table
+                    dataSource={microbiologicalTableData}
+                    columns={columnsMicrobiological}
+                    pagination={false}
+                    scroll={{ x: "max-content" }}
+                />
             </div>
+
+
         </Space>
     );
 };
