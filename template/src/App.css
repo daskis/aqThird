@@ -11,6 +11,7 @@
 .App {
   display: flex;
   flex-direction: column;
+  position: relative;
   width: 100vw;
   height: 100vh;
 }
@@ -53,20 +54,25 @@
   position: relative;
 }
 .infosMenu {
-  padding: 30px;
+  padding: 20px;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 200px;
+  width: 300px;
   background: #fff;
 }
 .infosMenu > div {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
 }
+
+.g2-tooltip {
+  display: none !important;
+}
+
 .closeIcon {
   margin-left: auto;
   cursor: pointer;

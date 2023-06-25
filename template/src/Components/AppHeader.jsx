@@ -10,12 +10,6 @@ const AppHeader = () => {
         <div className={"AppHeader"}>
             <Image width={40} src={logo}></Image>
             <Space>
-                <Badge count={20} dot>
-                    <MailOutlined style={{fontSize: 20}} />
-                </Badge>
-                <Badge count={20} dot>
-                    <BellFilled style={{fontSize: 20}} />
-                </Badge>
                 {
                     Cookie.get("auth")
                     ?

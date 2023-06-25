@@ -1,132 +1,110 @@
-import {YMaps, Map, Polygon} from '@pbe/react-yandex-maps';
-import React, {useEffect, useRef, useState} from "react";
+import {YMaps, Map, Polygon, Placemark} from '@pbe/react-yandex-maps';
+import React, {Fragment, useEffect, useRef, useState} from "react";
 import {Segmented} from "antd";
 import {useDispatch, useSelector} from "react-redux";
-import {setActive, setIsActive} from "../../features/infosSlice.js";
-import classNames from "classnames";
+import {fetchInfos, setActive, setCommonInfo, setIsActive} from "../../features/infosSlice.js";
 import SideInfoMenu from "../SideInfoMenu/SideInfoMenu.jsx";
+import {fetchSectors} from "../../features/sectorsSlice.js";
 
 const BubleMap = () => {
     const [fillColor, setFillColor] = useState("#008000")
     const dispatch = useDispatch()
     const value = useSelector(state => state.infos.activeTab)
     const isActive = useSelector(state => state.infos.isActive)
-    const polygons = [
+    const data = useSelector(state => state.infos.data)
 
-        {
-            "id": 1,
-            "geometry": [
-                [45.332309, 37.195143],
-                [45.332864, 37.197568],
-                [45.331123, 37.197398],
-                [45.331341, 37.195016]
-            ]
-        },
-        {
-            "id": 2,
-            "geometry": [
-                [45.331233, 37.194995],
-                [45.330980, 37.197457],
-                [45.330545, 37.197436],
-                [45.330179, 37.201188],
-                [45.326577, 37.200812],
-                [45.326636, 37.199311],
-                [45.324825, 37.199086],
-                [45.325329, 37.194344]
-            ]
-        },
-        {
-            "id": 3,
-            "geometry": [
-                [45.332897, 37.197777],
-                [45.333898, 37.200990],
-                [45.333825, 37.201595],
-                [45.332166, 37.201442],
-                [45.332516, 37.197718]
-            ]
-        },
-        {
-            "id": 4,
-            "geometry": [
-                [45.332384, 37.197743],
-                [45.332043, 37.201422],
-                [45.330348, 37.201235],
-                [45.330667, 37.197577]
-            ]
-        },
-        {
-            "id": 5,
-            "geometry": [
-                [45.333872, 37.201821],
-                [45.333634, 37.204296],
-                [45.330104, 37.203914],
-                [45.330334, 37.201496]
-            ]
-        },
-        {
-            "id": 6,
-            "geometry": [
-                [45.333637, 37.204431],
-                [45.333374, 37.206813],
-                [45.329849, 37.206405],
-                [45.330091, 37.204017]
-            ]
-        },
-        {
-            "id": 7,
-            "geometry": [
-                [45.333320, 37.206945],
-                [45.333001, 37.209425],
-                [45.329633, 37.209075],
-                [45.329814, 37.206605]
-            ]
-        },
-        {
-            "id": 8,
-            "geometry": [
-                [45.329604, 37.207802],
-                [45.329434, 37.209873],
-                [45.323883, 37.209252],
-                [45.324078, 37.207146]
-            ]
-        },
-        {
-            "id": 9,
-            "geometry": [
-                [45.332940, 37.209632],
-                [45.332587, 37.211979],
-                [45.329373, 37.211703],
-                [45.329629, 37.209217]
-            ]
-        },
-        {
-            "id": 10,
-            "geometry": [
-                [45.329385, 37.210046],
-                [45.329215, 37.212030],
-                [45.323688, 37.211461],
-                [45.323895, 37.209424]
-            ]
-        },
-        {
-            "id": 11,
-            "geometry": [
-                [45.332610, 37.212185],
-                [45.332282, 37.214222],
-                [45.329158, 37.213951],
-                [45.329361, 37.211827]
-            ]
-        },
-        {
-            "id": 12,
-            "geometry": [
-                [45.329225, 37.212209],
-                [45.329072, 37.213951],
-                [45.323477, 37.213552],
-                [45.323694, 37.211571]
-            ]
+
+    const dataSectors = useSelector(state => state.sectors.data)
+
+    useEffect(() => {
+        dispatch(fetchSectors())
+        if (dataSectors) {
+            console.log(dataSectors)
         }
-    ]
+    }, [dispatch])
+
+
+    const shadesOfGreen = [
+        '#00FF00',
+        '#00E200',
+        '#00C500',
+        '#00A800',
+        '#008B00',
+        '#006E00',
+        '#005100',
+        '#003400',
+        '#001700',
+        '#000000',
+        '#1C1C1C',
+        '#393939'
+    ];
+
+    const shadesOfBlue = [
+        '#0000FF',
+        '#0000EE',
+        '#0000DD',
+        '#0000CC',
+        '#0000BB',
+        '#0000AA',
+        '#000099',
+        '#000088',
+        '#000077',
+        '#000066',
+        '#000055',
+        '#000044'
+    ];
+
+
+    function findCenter(coordinates) {
+        let sumX = 0;
+        let sumY = 0;
+
+        for (let i = 0; i < coordinates.length; i++) {
+            sumX += coordinates[i][0]; // Суммируем координаты X
+            sumY += coordinates[i][1]; // Суммируем координаты Y
+        }
+
+        const centerX = sumX / coordinates.length; // Среднее арифметическое координат X
+        const centerY = sumY / coordinates.length; // Среднее арифметическое координат Y
+
+        return [centerX, centerY]; // Возвращаем центр фигуры в виде массива координат [X, Y]
+    }
+
+    const shadesOfWhite = [
+        '#F8F8F8',
+        '#E7E7E7',
+        '#D6D6D6',
+        '#C5C5C5',
+        '#B4B4B4',
+        '#A3A3A3',
+        '#929292',
+        '#818181',
+        '#707070',
+        '#5F5F5F',
+        '#4E4E4E',
+        '#3D3D3D'
+    ];
+    const shadesOfRed = [
+        "#FFCCCC",
+        "#FFB2B2",
+        "#FF9999",
+        "#FF7F7F",
+        "#FF6666",
+        "#FF4C4C",
+        "#FF3333",
+        "#FF1919",
+        "#FF0000",
+        "#E60000",
+        "#CC0000",
+        "#B30000"
+    ];
+
+
+    const handleButtonClick = (item) => {
+        dispatch(fetchInfos(item.grape))
+        dispatch(setCommonInfo(item))
+    }
+
     const handleDoubleClick = (e) => {
         e.preventDefault();
     };
@@ -144,49 +122,200 @@ const BubleMap = () => {
                 break
         }
     }, [dispatch, value])
-    return (
-        <div className="infosMenuWrapper">
-            <Segmented options={['Почва', 'Вода', 'Воздух']} value={value} onChange={(e) => dispatch(setActive(e))}/>
-            <YMaps
+    if (dataSectors) {
+        switch (value) {
+            case "Вода":
+                return (
+                    <div className="infosMenuWrapper">
+                        <Segmented options={['Почва', 'Вода', 'Воздух', 'Болезни']} value={value}
+                                   onChange={(e) => dispatch(setActive(e))}/>
+                        <YMaps
+                            query={{
+                                apikey: "ac2b031c-025e-41d0-b2db-cc8dc8fdccc3"
+                            }}>
+                            <Map
+                                onDoubleClick={handleDoubleClick}
+                                width={"78vw"}
+                                height={500}
+                                defaultState={{
+                                    center: [45.330548, 37.204131],
+                                    zoom: 15
+                                }}>
+                                {dataSectors.map((item, i) => {
+                                    return (
+                                        <Fragment key={item.id}>
+                                            <Polygon
+                                                onClick={(e) => {
+                                                    if (!isActive) {
+                                                        handleButtonClick(item)
+                                                        dispatch(setIsActive())
+                                                    }
+                                                }}
+                                                geometry={[item.coordinates]}
+                                                options={{
+                                                    fillColor: shadesOfBlue[i],
+                                                    strokeColor: "#000",
+                                                    opacity: 0.3,
+                                                    strokeWidth: 2,
+                                                    strokeStyle: "shortdash",
+                                                    iconContent: `${i + 1}`, // Цифра внутри полигона
+                                                    iconColor: 'red', // Цвет значка
+                                                }}
+                                            />
+                                        </Fragment>
+                                    )
+                                })}
 
-                query={{
-                    apikey: "ac2b031c-025e-41d0-b2db-cc8dc8fdccc3"
-                }}>
-                <Map
-                    onDoubleClick={handleDoubleClick}
-                    width={"80vw"}
-                    height={500}
-                    defaultState={{
-                        center: [45.323116, 37.223443],
-                        zoom: 14
-                    }}>
-                    {polygons.map(item => {
-                        return (
-                            <Polygon
-                                key={item.id}
-                                onClick={(e) => {
-                                    if (!isActive) {
-                                        dispatch(setIsActive())
-                                    }
-                                }}
-                                geometry={[item.geometry]}
-                                options={{
-                                    fillColor: fillColor,
-                                    strokeColor: "#000",
-                                    opacity: 0.3,
-                                    strokeWidth: 5,
-                                    strokeStyle: "shortdash",
+                            </Map>
+                        </YMaps>
+                        <SideInfoMenu/>
+                    </div>
 
-                                }}
-                            />
-                        )
-                    })}
+                )
+                break
+            case "Почва":
+                return (
+                    <div className="infosMenuWrapper">
+                        <Segmented options={['Почва', 'Вода', 'Воздух', 'Болезни']} value={value}
+                                   onChange={(e) => dispatch(setActive(e))}/>
+                        <YMaps
+                            query={{
+                                apikey: "ac2b031c-025e-41d0-b2db-cc8dc8fdccc3"
+                            }}>
+                            <Map
+                                onDoubleClick={handleDoubleClick}
+                                width={"78vw"}
+                                height={500}
+                                defaultState={{
+                                    center: [45.330548, 37.204131],
+                                    zoom: 15
+                                }}>
+                                {dataSectors.map((item, i) => {
+                                    return (
+                                        <Polygon
+                                            key={item.id}
+                                            onClick={(e) => {
+                                                if (!isActive) {
+                                                    handleButtonClick(item)
+                                                    dispatch(setIsActive())
+                                                }
+                                            }}
+                                            geometry={[item.coordinates]}
+                                            options={{
+                                                fillColor: shadesOfGreen[i],
+                                                strokeColor: "#000",
+                                                opacity: 0.3,
+                                                strokeWidth: 2,
+                                                strokeStyle: "shortdash",
 
-                </Map>
-            </YMaps>
-            <SideInfoMenu/>
-        </div>
+                                            }}
+                                        />
+                                    )
+                                })}
 
-    )
+                            </Map>
+                        </YMaps>
+                        <SideInfoMenu/>
+                    </div>
+
+                )
+                break
+            case "Воздух":
+                return (
+                    <div className="infosMenuWrapper">
+                        <Segmented options={['Почва', 'Вода', 'Воздух', 'Болезни']} value={value}
+                                   onChange={(e) => dispatch(setActive(e))}/>
+                        <YMaps
+                            query={{
+                                apikey: "ac2b031c-025e-41d0-b2db-cc8dc8fdccc3"
+                            }}>
+                            <Map
+                                onDoubleClick={handleDoubleClick}
+                                width={"78vw"}
+                                height={500}
+                                defaultState={{
+                                    center: [45.330548, 37.204131],
+                                    zoom: 15
+                                }}>
+                                {dataSectors.map((item, i) => {
+                                    return (
+                                        <Polygon
+                                            key={item.id}
+                                            onClick={(e) => {
+                                                if (!isActive) {
+                                                    handleButtonClick(item)
+                                                    dispatch(setIsActive())
+                                                }
+                                            }}
+                                            geometry={[item.coordinates]}
+                                            options={{
+                                                fillColor: shadesOfWhite[i],
+                                                strokeColor: "#000",
+                                                opacity: 0.4,
+                                                strokeWidth: 2,
+                                                strokeStyle: "shortdash",
+
+                                            }}
+                                        />
+                                    )
+                                })}
+
+                            </Map>
+                        </YMaps>
+                        <SideInfoMenu/>
+                    </div>
+
+                )
+                break
+            case "Болезни":
+                return (
+                    <div className="infosMenuWrapper">
+                        <Segmented options={['Почва', 'Вода', 'Воздух', 'Болезни']} value={value}
+                                   onChange={(e) => dispatch(setActive(e))}/>
+                        <YMaps
+                            query={{
+                                apikey: "ac2b031c-025e-41d0-b2db-cc8dc8fdccc3"
+                            }}>
+                            <Map
+                                onDoubleClick={handleDoubleClick}
+                                width={"78vw"}
+                                height={500}
+                                defaultState={{
+                                    center: [45.330548, 37.204131],
+                                    zoom: 15
+                                }}>
+                                {dataSectors.map((item, i) => {
+                                    return (
+                                        <Polygon
+                                            key={item.id}
+                                            onClick={(e) => {
+                                                if (!isActive) {
+                                                    handleButtonClick(item)
+                                                    dispatch(setIsActive())
+                                                }
+                                            }}
+                                            geometry={[item.coordinates]}
+                                            options={{
+                                                fillColor: shadesOfRed[i],
+                                                strokeColor: "#000",
+                                                opacity: 0.5,
+                                                strokeWidth: 2,
+                                                strokeStyle: "shortdash",
+
+                                            }}
+                                        />
+                                    )
+                                })}
+
+                            </Map>
+                        </YMaps>
+                        <SideInfoMenu/>
+                    </div>
+
+                )
+                break
+        }
+
+    }
 };
 export default BubleMap;

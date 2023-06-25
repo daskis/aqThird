@@ -8,7 +8,7 @@ import RoutingInfo from "../Pages/RoutingInfo/RoutingInfo.jsx";
 import Analyzes from "../Pages/Analyzes/Analyzes.jsx";
 import CreateAnalyzes from "../Pages/CreateAnalyzes/CreateAnalyzes.jsx";
 import Changes from "../Pages/Changes/Changes.jsx";
-import Messages from "../Pages/Messages/Messages.jsx";
+import Tasks from "../Pages/Tasks/Tasks.jsx";
 const AppRoutes = () => {
     return (
             <Routes>
@@ -20,7 +20,7 @@ const AppRoutes = () => {
                 <Route path="/analyzes" element={<Analyzes/>}></Route>
                 <Route path="/new" element={<CreateAnalyzes/>}></Route>
                 <Route path="/changes" element={<Changes/>}></Route>
-                <Route path="/messages" element={<Messages/>}></Route>
+                <Route path="/messages" element={<Tasks/>}></Route>
             </Routes>
     );
 };

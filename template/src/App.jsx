@@ -7,9 +7,14 @@ import AppFooter from "./components/AppFooter.jsx";
 import classNames from "classnames";
 import Cookie from "js-cookie";
 import {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchUsers} from "./features/usersSlice.js";
+import {ToastContainer} from "react-toastify";
 
 
 function App() {
+
+
     return (
         <div className="App">
             <AppHeader/>
@@ -21,6 +26,8 @@ function App() {
                 <AppContent></AppContent>
             </Space>
             <AppFooter/>
+            <ToastContainer style={{position: "absolute", bottom: 0, right: 0, left: "auto", top: "auto"}} />
+
         </div>
     )
 }

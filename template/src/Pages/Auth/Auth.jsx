@@ -1,29 +1,31 @@
-import React from 'react';
-import {Button, Space, Typography} from "antd";
+import React, {useEffect, useState} from 'react';
+import {Button, Select, Space, Typography} from "antd";
 import Cookie from "js-cookie";
 import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchUsers} from "../../features/usersSlice.js";
+import Title from "antd/es/typography/Title.js";
 
+const {Option} = Select
 const Auth = () => {
     const navigate = useNavigate()
-    const selectAuth = (type) => {
-        switch (type) {
-            case "first":
-                Cookie.set("auth", "first")
-                navigate("/")
-                window.location.reload();
-                break;
-            case "second":
-                Cookie.set("auth", "second")
-                navigate("/")
-                window.location.reload();
-                break;
-            case "third":
-                Cookie.set("auth", "third")
-                navigate("/")
-                window.location.reload();
-                break;
-            default:
-                break;
+    const data = useSelector(state => state.users.data);
+    const dispatch = useDispatch();
+    const [name, setName] = useState()
+
+    useEffect(() => {
+        dispatch(fetchUsers());
+
+    }, [dispatch]);
+
+
+    const handleAuth = () => {
+        if (name) {
+            Cookie.set("auth", `${name}`)
+            navigate("/")
+            setTimeout(() => {
+                window.location.reload()
+            }, 100)
         }
     }
     return (
@@ -34,11 +36,19 @@ const Auth = () => {
                         <Typography.Title>Вы уже вошли</Typography.Title>
                     </Space>
                     :
-                    <>
-                        <Button onClick={() => selectAuth("first")} type="primary">Войти на главный миньон (прораб)</Button>
-                        <Button onClick={() => selectAuth("second")} type="primary">Войти на миньон поменьше (чел из лабы)</Button>
-                        <Button onClick={() => selectAuth("third")} type="primary">Войти на самый маленький миньон (раб)</Button>
-                    </>
+                    <div style={{width: "300px", display: "flex", flexDirection: "column", gap: 20}}>
+                        <Title>Вход</Title>
+                        <Select
+                            onSelect={setName}>
+                            {data && data.map(item => {
+                                return (
+                                    <Option key={item.id}
+                                            value={item.id}>{`${item.name} ${item.surname} (${item.role})`}</Option>
+                                )
+                            })}
+                        </Select>
+                        <Button size={"large"} onClick={handleAuth} type="primary">Войти</Button>
+                    </div>
             }
         </div>
     );

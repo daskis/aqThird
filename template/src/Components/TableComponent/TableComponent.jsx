@@ -1,140 +1,41 @@
-import { SearchOutlined } from '@ant-design/icons';
+import {SearchOutlined} from '@ant-design/icons';
 import {Button, ConfigProvider, Input, Pagination, Select, Space, Table} from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import {forwardRef, useEffect, useRef, useState} from 'react';
 import Highlighter from 'react-highlight-words';
-
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        job: 'Рабочий',
-    },
-    {
-        key: '2',
-        name: 'Joe Black',
-        age: 42,
-        job: 'Руководитель',
-    },
-    {
-        key: '3',
-        name: 'Jim Green',
-        age: 32,
-        job: 'Научный сотрудник',
-    },
-    {
-        key: '4',
-        name: 'Jim Red',
-        age: 32,
-        job: 'Рабочий',
-    },
-    {
-        key: '5',
-        name: 'Jane Smith',
-        age: 28,
-        job: 'Руководитель',
-    },
-    {
-        key: '6',
-        name: 'Robert Johnson',
-        age: 45,
-        job: 'Рабочий',
-    },
-    {
-        key: '7',
-        name: 'Michael Davis',
-        age: 37,
-        job: 'Рабочий',
-    },
-    {
-        key: '8',
-        name: 'William Wilson',
-        age: 53,
-        job: 'Научный сотрудник',
-    },
-    {
-        key: '9',
-        name: 'Emily Taylor',
-        age: 29,
-        job: 'Рабочий',
-    },
-    {
-        key: '10',
-        name: 'Christopher Anderson',
-        age: 31,
-        job: 'Научный сотрудник',
-    },
-    {
-        key: '11',
-        name: 'Linda Thomas',
-        age: 40,
-        job: 'Руководитель',
-    },
-    {
-        key: '12',
-        name: 'Daniel Lee',
-        age: 35,
-        job: 'Рабочий',
-    },
-    {
-        key: '13',
-        name: 'Maria Martinez',
-        age: 27,
-        job: 'Рабочий',
-    },
-    {
-        key: '14',
-        name: 'Matthew Johnson',
-        age: 39,
-        job: 'Руководитель',
-    },
-    {
-        key: '15',
-        name: 'Sophia Garcia',
-        age: 34,
-        job: 'Научный сотрудник',
-    },
-    {
-        key: '16',
-        name: 'James Taylor',
-        age: 47,
-        job: 'Руководитель',
-    },
-    {
-        key: '17',
-        name: 'Olivia Wilson',
-        age: 31,
-        job: 'Рабочий',
-    },
-    {
-        key: '18',
-        name: 'Benjamin Martinez',
-        age: 36,
-        job: 'Рабочий',
-    },
-    {
-        key: '19',
-        name: 'Emma Davis',
-        age: 33,
-        job: 'Научный сотрудник',
-    },
-    {
-        key: '20',
-        name: 'Alexander Brown',
-        age: 41,
-        job: 'Руководитель',
-    },
-];
+import {useDispatch, useSelector} from "react-redux";
+import {fetchUsers} from "../../features/usersSlice.js";
+import {fetchSectors} from "../../features/sectorsSlice.js";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {fetchPostTasks} from "../../features/tasksSlice.js";
+import TextArea from "antd/es/input/TextArea.js";
 
 const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
 
+const jobArr = ["обрезка", "подвязка", "обломка", "прополка", "заводка"];
 
-const TableComponent = () => {
+const TableComponent = forwardRef((props, ref) => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const searchInput = useRef(null);
+    const [selectJobArr, setSelectJobArr] = useState([]);
+    const [selectSectorArr, setSelectSectorArr] = useState([]);
+
+    const dispatch = useDispatch();
+    const data = useSelector((state) => state.users.data);
+    const loading = useSelector((state) => state.users.loading);
+    const error = useSelector((state) => state.users.error);
+    const dataSectors = useSelector(state => state.sectors.data)
+
+
+    const success = useSelector(state => state.tasks.data)
+    useEffect(() => {
+        dispatch(fetchUsers());
+        dispatch(fetchSectors())
+    }, [dispatch]);
+
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -150,10 +51,10 @@ const TableComponent = () => {
     };
 
     const getColumnSearchProps = (dataIndex) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
             <div
                 style={{
-                    padding: 8,
+                    padding: 20,
                 }}
                 onKeyDown={(e) => e.stopPropagation()}
             >
@@ -172,7 +73,7 @@ const TableComponent = () => {
                     <Button
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                        icon={<SearchOutlined />}
+                        icon={<SearchOutlined/>}
                         size="small"
                         style={{
                             width: 90,
@@ -238,8 +139,47 @@ const TableComponent = () => {
             ),
     });
 
-    const handleSelectChange = (value, record) => {
-        console.log(record.key);
+    const handleButtonClick = (id, record) => {
+        if (selectSectorArr && selectJobArr) {
+            const job = selectJobArr.find((item) => item.id === id)?.value;
+            const i = selectSectorArr.find((item) => item.id === id)?.value;
+            const sector = dataSectors[i].id;
+            const taskData = {
+                user: id,
+                task_type: job,
+                sector,
+                status: "3a8dc792-d10f-49ca-babd-8498932afbb3",
+                description: ""
+            };
+
+            toast("Задача назначена")
+            dispatch(fetchPostTasks(taskData))
+
+
+        }
+    };
+
+
+    const handleSelectJob = (value, record) => {
+        const updatedSelectJobArr = [...selectJobArr];
+        const index = updatedSelectJobArr.findIndex((item) => item.id === record.key);
+        if (index !== -1) {
+            updatedSelectJobArr[index].value = value;
+        } else {
+            updatedSelectJobArr.push({id: record.key, value});
+        }
+        setSelectJobArr(updatedSelectJobArr);
+    };
+
+    const handleSelectSector = (value, record) => {
+        const updatedSelectSectorArr = [...selectSectorArr];
+        const index = updatedSelectSectorArr.findIndex((item) => item.id === record.key);
+        if (index !== -1) {
+            updatedSelectSectorArr[index].value = value;
+        } else {
+            updatedSelectSectorArr.push({id: record.key, value});
+        }
+        setSelectSectorArr(updatedSelectSectorArr);
     };
 
     const columns = [
@@ -247,40 +187,62 @@ const TableComponent = () => {
             title: 'Имя',
             dataIndex: 'name',
             key: 'name',
-            width: '30%',
-            ...getColumnSearchProps('name'),
-        },
-        {
-            title: 'Возраст',
-            dataIndex: 'age',
-            key: 'age',
             width: '20%',
-            ...getColumnSearchProps('age'),
+            render: (text, record) => `${record.name} ${record.surname}`,
+            ...getColumnSearchProps('name'),
+            sorter: (a, b) => a.name.length - b.name.length,
+            sortDirections: ['descend', 'ascend'],
         },
         {
             title: 'Должность',
-            dataIndex: 'job',
-            key: 'job',
-            ...getColumnSearchProps('job'),
-            sorter: (a, b) => a.job.length - b.job.length,
+            dataIndex: 'role',
+            key: 'role',
+            ...getColumnSearchProps('role'),
+            sorter: (a, b) => a.role.length - b.role.length,
             sortDirections: ['descend', 'ascend'],
         },
         {
             title: 'Выберите сектор',
             dataIndex: 'select',
             key: 'select',
-            width: '30%',
+            width: '15%',
             render: (text, record) => (
                 <Select
                     defaultValue={text}
-                    onChange={(value) => handleSelectChange(value, record)}
                     className="expanded-select"
+                    onChange={(value) => handleSelectSector(value, record)}
                 >
-                    {arr.map((item) => {
-                        return <Select.Option key={item}>{item}</Select.Option>;
-                    })}
+                    {arr.map((item) => (
+                        <Select.Option key={item}>{item}</Select.Option>
+                    ))}
                 </Select>
             ),
+        },
+        {
+            title: 'Выберите занятие',
+            dataIndex: 'work',
+            key: 'work',
+            width: '20%',
+            render: (text, record) => (
+                <Select
+                    defaultValue={text}
+                    className="expanded-select"
+                    onChange={(value) => handleSelectJob(value, record)}
+                >
+                    {jobArr.map((item) => (
+                        <Select.Option key={item}>{item}</Select.Option>
+                    ))}
+                </Select>
+            ),
+        },
+        {
+            title: 'Описание',
+            dataIndex: 'description',
+            key: 'description',
+            width: "20%",
+            render: (text, record) => (
+                <Input/>
+            )
         },
         {
             title: 'Действие',
@@ -289,42 +251,63 @@ const TableComponent = () => {
                 <ConfigProvider
                     theme={{
                         token: {
-                            colorPrimary: "#00b96b"
-                        }
+                            colorPrimary: '#00b96b',
+                        },
                     }}
                 >
-                    <Button type="primary" onClick={() => handleButtonClick(record.key)}>Отправить задачу</Button>
-
+                    <Button
+                        type="primary"
+                        onClick={() => handleButtonClick(record.key, record)}
+                    >
+                        Отправить задачу
+                    </Button>
                 </ConfigProvider>
             ),
         },
     ];
 
+    const filteredData = data
+        ? data.filter((record) =>
+            searchedColumn
+                ? record[searchedColumn]
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchText.toLowerCase())
+                : true
+        )
+        : [];
 
-    const handleButtonClick = (key) => {
-        console.log(key);
-    };
-
-    const filteredData = data.filter((record) =>
-        searchedColumn ? record[searchedColumn].toString().toLowerCase().includes(searchText.toLowerCase()) : true
+    const paginatedData = filteredData.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
     );
-
-    const paginatedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     return (
-        <div>
-            <Table columns={columns} dataSource={paginatedData} pagination={false} />
-            <Pagination
-                current={currentPage}
-                pageSize={pageSize}
-                total={filteredData.length}
-                onChange={(page, pageSize) => {
-                    setCurrentPage(page);
-                    setPageSize(pageSize);
-                }}
-            />
-        </div>
+
+        <>
+            <div style={{position: "relative"}}>
+                <Table
+                    columns={columns}
+                    style={{padding: 20, width: '70vw'}}
+                    dataSource={paginatedData.map((item) => ({
+                        ...item,
+                        key: item.id,
+                        name: `${item.name} ${item.surname}`,
+                    }))}
+                    pagination={false}
+                />
+                <Pagination
+                    current={currentPage}
+                    pageSize={pageSize}
+                    total={filteredData.length}
+                    onChange={(page, pageSize) => {
+                        setCurrentPage(page);
+                        setPageSize(pageSize);
+                    }}
+                />
+            </div>
+        </>
     );
-};
+});
 
 export default TableComponent;

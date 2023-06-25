@@ -86,29 +86,29 @@ const data = [
 
 
 const columnsChemical = [
-    { title: 'Уровень кислотности', dataIndex: 'acidity', key: 'acidity' },
-    { title: 'Уровень pH', dataIndex: 'pH', key: 'pH' },
-    { title: 'Содержание сахара', dataIndex: 'sugarContent', key: 'sugarContent' },
-    { title: 'Коэффициенты азота', dataIndex: 'nitrogenRatio', key: 'nitrogenRatio' },
-    { title: 'Содержание железа', dataIndex: 'ironContent', key: 'ironContent' },
+    {title: 'Уровень кислотности', dataIndex: 'acidity', key: 'acidity'},
+    {title: 'Уровень pH', dataIndex: 'pH', key: 'pH'},
+    {title: 'Содержание сахара', dataIndex: 'sugarContent', key: 'sugarContent'},
+    {title: 'Коэффициенты азота', dataIndex: 'nitrogenRatio', key: 'nitrogenRatio'},
+    {title: 'Содержание железа', dataIndex: 'ironContent', key: 'ironContent'},
 ];
 
 const columnsPhysical = [
-    { title: 'Вес кисти винограда', dataIndex: 'grapeWeight', key: 'grapeWeight' },
-    { title: 'Размер ягоды', dataIndex: 'berrySize', key: 'berrySize' },
-    { title: 'Цвет ягоды', dataIndex: 'berryColor', key: 'berryColor' },
-    { title: 'Содержание сока', dataIndex: 'juiceContent', key: 'juiceContent' },
+    {title: 'Вес кисти винограда', dataIndex: 'grapeWeight', key: 'grapeWeight'},
+    {title: 'Размер ягоды', dataIndex: 'berrySize', key: 'berrySize'},
+    {title: 'Цвет ягоды', dataIndex: 'berryColor', key: 'berryColor'},
+    {title: 'Содержание сока', dataIndex: 'juiceContent', key: 'juiceContent'},
 ];
 
 const columnsMicrobiological = [
-    { title: 'Содержание дрожжей', dataIndex: 'yeastContent', key: 'yeastContent' },
-    { title: 'Содержание бактерий', dataIndex: 'bacteriaContent', key: 'bacteriaContent' },
+    {title: 'Содержание дрожжей', dataIndex: 'yeastContent', key: 'yeastContent'},
+    {title: 'Содержание бактерий', dataIndex: 'bacteriaContent', key: 'bacteriaContent'},
 ];
 
 const rest = [
-    { title: 'Профиль аромата', dataIndex: 'aromaProfile', key: 'aromaProfile' },
-    { title: 'Профиль вкуса', dataIndex: 'tasteProfile', key: 'tasteProfile' },
-    { title: 'Сорт винограда', dataIndex: 'grapeVariety', key: 'grapeVariety' },
+    {title: 'Профиль аромата', dataIndex: 'aromaProfile', key: 'aromaProfile'},
+    {title: 'Профиль вкуса', dataIndex: 'tasteProfile', key: 'tasteProfile'},
+    {title: 'Сорт винограда', dataIndex: 'grapeVariety', key: 'grapeVariety'},
 ]
 
 const chemicalTableData = data.map(item => ({
@@ -153,7 +153,8 @@ const Analyzes = () => {
         display: 'grid',
         gridTemplateColumns: "1fr, 1fr",
         padding: 20,
-        gridGap: '32px',
+        rowGap: '32px',
+        columnGap: '32px',
         gridTemplateAreas: "" +
             "time ." +
             "analyzes analyzes" +
@@ -163,7 +164,7 @@ const Analyzes = () => {
     return (
         <Space size={32} style={gridContainerStyles}>
             <DatePicker
-                style={{ width: 200, gridArea: "time" }}
+                style={{width: 200, gridArea: "time"}}
                 placeholder={"Выберите дату анализа"}
                 onChange={handleClick}
             />
@@ -173,7 +174,7 @@ const Analyzes = () => {
                     dataSource={restTableData}
                     columns={rest}
                     pagination={false}
-                    scroll={{ x: "max-content" }}
+                    scroll={{x: "max-content"}}
                 />
             </div>
             <div style={{gridArea: "analyzes"}}>
@@ -182,7 +183,7 @@ const Analyzes = () => {
                     dataSource={physicalTableData}
                     columns={columnsPhysical}
                     pagination={false}
-                    scroll={{ x: "max-content" }}
+                    scroll={{x: "max-content"}}
                 />
             </div>
             <div>
@@ -191,10 +192,9 @@ const Analyzes = () => {
                     dataSource={chemicalTableData}
                     columns={columnsChemical}
                     pagination={false}
-                    scroll={{ x: "max-content" }}
+                    scroll={{x: "max-content"}}
                 />
             </div>
-
 
 
             <div style={{gridArea: "analyzes"}}>
@@ -203,7 +203,7 @@ const Analyzes = () => {
                     dataSource={microbiologicalTableData}
                     columns={columnsMicrobiological}
                     pagination={false}
-                    scroll={{ x: "max-content" }}
+                    scroll={{x: "max-content"}}
                 />
             </div>
 
